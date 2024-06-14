@@ -87,16 +87,32 @@ public class LibraryMenu {
     
         int newId = getNewId();
         Status status = Status.AVAILABLE; // Set default status to AVAILABLE
+        LibraryItem newItem;
         if (itemType == 1) {
-            library.addItem(new Book(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
+            newItem = new Book(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType);
+            library.addItem((Book) newItem);
         } else if (itemType == 2) {
-            library.addItem(new Periodical(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
+            newItem = new Periodical(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType);
+            library.addItem((Periodical) newItem);
+        } else {
+            System.out.println("Invalid item type selected.");
+            return;
         }
+        library.saveItems(); // Ensure the new item is saved to the file
+    
+        // Success notification with book details in a single line
+        System.out.println();
+        System.out.println();
+        System.out.println("Library item added successfully: \n" + newItem.getTitle() + " by " + newItem.getAuthor() + ", ISBN: " + newItem.getISBN() + ", Publisher: " + newItem.getPublisher() + ", Copies: " + newItem.getNumberOfCopies() + ", Status: " + newItem.getStatus() + ", Type: " + newItem.getBookType());
+        System.out.println();
+        System.out.println();
     }
     
 
 
     private static void editLibraryItem() {
+        System.out.println();
+        System.out.println();
         System.out.print("Enter ID of the item to edit: ");
         String itemId = scanner.nextLine();
         LibraryItem item = library.findItemById(itemId);
@@ -114,35 +130,52 @@ public class LibraryMenu {
             item.setNumberOfCopies(scanner.nextInt());
             scanner.nextLine();  // Consume newline
             library.saveItems();
+            System.out.println();
+            System.out.println();
             System.out.println("Item edited successfully.");
+            System.out.println();
+            System.out.println();
         } else {
             System.out.println("Item not found.");
         }
     }
 
     private static void deleteLibraryItem() {
+        System.out.println();
+        System.out.println();
         System.out.print("Enter ID of the item to delete: ");
         String itemId = scanner.nextLine();
         library.removeItem(itemId);
         System.out.println("Item deleted successfully.");
+        System.out.println();
+        System.out.println();
     }
 
     private static void borrowLibraryItem() {
+        System.out.println();
+        System.out.println();
         System.out.print("Enter name of the patron: ");
         String patronName = scanner.nextLine();
         System.out.print("Enter ID of the item to borrow: ");
         String itemId = scanner.nextLine();
         library.borrowItem(patronName, itemId);
         System.out.println("Item borrowed successfully.");
+        System.out.println();
+        System.out.println();
     }
 
     private static void returnLibraryItem() {
+        System.out.println();
+        System.out.println();
         System.out.print("Enter name of the patron: ");
         String patronName = scanner.nextLine();
         System.out.print("Enter ID of the item to return: ");
         String itemId = scanner.nextLine();
         library.returnItem(patronName, itemId);
+        System.out.println();
         System.out.println("Item returned successfully.");
+        System.out.println();
+        System.out.println();
     }
 
     private static void searchLibraryItems() {
