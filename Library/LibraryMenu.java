@@ -57,50 +57,43 @@ public class LibraryMenu {
         scanner.close();
     }
 
-  private static void addLibraryItem() {
-    System.out.println("Enter details of the new library item:");
-    System.out.print("Enter title: ");
-    String title = scanner.nextLine();
-    System.out.print("Enter author: ");
-    String author = scanner.nextLine();
-    System.out.print("Enter ISBN: ");
-    String ISBN = scanner.nextLine();
-    System.out.print("Enter publisher: ");
-    String publisher = scanner.nextLine();
-    System.out.print("Enter number of copies: ");
-    int numberOfCopies = scanner.nextInt();
-    scanner.nextLine();  // Consume newline
-
-    System.out.println("Select item type:");
-    System.out.println("1. Book");
-    System.out.println("2. Periodical");
-    int itemType = scanner.nextInt();
-    scanner.nextLine();  // Consume newline
-
-    System.out.println("Select status:");
-    for (Status s : Status.values()) {
-        System.out.println(s.ordinal() + 1 + ". " + s);
+    private static void addLibraryItem() {
+        System.out.println("Enter details of the new library item:");
+        System.out.print("Enter title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter author: ");
+        String author = scanner.nextLine();
+        System.out.print("Enter ISBN: ");
+        String ISBN = scanner.nextLine();
+        System.out.print("Enter publisher: ");
+        String publisher = scanner.nextLine();
+        System.out.print("Enter number of copies: ");
+        int numberOfCopies = scanner.nextInt();
+        scanner.nextLine();  // Consume newline
+    
+        System.out.println("Select item type:");
+        System.out.println("1. Book");
+        System.out.println("2. Periodical");
+        int itemType = scanner.nextInt();
+        scanner.nextLine();  // Consume newline
+    
+        System.out.println("Select book type:");
+        for (BookType bt : BookType.values()) {
+            System.out.println(bt.ordinal() + 1 + ". " + bt);
+        }
+        int bookTypeIndex = scanner.nextInt();
+        scanner.nextLine();  // Consume newline
+        BookType bookType = BookType.values()[bookTypeIndex - 1];
+    
+        int newId = getNewId();
+        Status status = Status.AVAILABLE; // Set default status to AVAILABLE
+        if (itemType == 1) {
+            library.addItem(new Book(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
+        } else if (itemType == 2) {
+            library.addItem(new Periodical(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
+        }
     }
-    int statusIndex = scanner.nextInt();
-    scanner.nextLine();  // Consume newline
-    Status status = Status.values()[statusIndex - 1];
-
-    System.out.println("Select book type:");
-    for (BookType bt : BookType.values()) {
-        System.out.println(bt.ordinal() + 1 + ". " + bt);
-    }
-    int bookTypeIndex = scanner.nextInt();
-    scanner.nextLine();  // Consume newline
-    BookType bookType = BookType.values()[bookTypeIndex - 1];
-
-    int newId = getNewId();
-    if (itemType == 1) {
-        library.addItem(new Book(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
-    } else if (itemType == 2) {
-        library.addItem(new Periodical(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
-    }
-
-}
+    
 
 
     private static void editLibraryItem() {
@@ -180,20 +173,29 @@ public class LibraryMenu {
         }
 
         if (results.isEmpty()) {
+            System.out.println();
             System.out.println("No items found.");
         } else {
+            System.out.println();
+            System.out.println();
             System.out.println("Search Results:");
             for (LibraryItem item : results) {
-                System.out.println(item.getId() + ": " + item.getTitle() + " by " + item.getAuthor() + " (" + item.getItemType() + ")");
+                System.out.println(item.getId() + ": " + item.getTitle() + " by " + item.getAuthor() + " (" + item.getItemType() + "), Status: " + item.getStatus() + ", Book Type: " + item.getBookType());
             }
+            System.out.println();
+            System.out.println();
         }
     }
 
     private static void displayAllLibraryItems() {
+        System.out.println();
+        System.out.println();
         System.out.println("Library Items:");
         for (LibraryItem item : library.getItems()) {
-            System.out.println(item.getId() + ": " + item.getTitle() + " by " + item.getAuthor() + " (" + item.getItemType() + ")");
+            System.out.println(item.getId() + ": " + item.getTitle() + " by " + item.getAuthor() + " (" + item.getItemType() + "), Status: " + item.getStatus() + ", Book Type: " + item.getBookType());
         }
+        System.out.println(); // First line break
+        System.out.println(); // Second line break
     }
 
     private static int getNewId() {

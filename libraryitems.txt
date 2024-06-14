@@ -8,4 +8,4 @@
 8,Artificial Intelligence,Frank Author,2233445566,Publisher H,0,OVERDUE,ELECTRONIC,Book
 9,1984,George Orwell,7788990011,Publisher I,2,AVAILABLE,AUDIO,Book
 10,Monthly Science,Science Monthly,1122446688,Publisher K,0,CHECKED_OUT,PRINTED,Periodical
-11,The Firestarter,Liam Howlett,493587349,Warner,1,AVAILABLE,ELECTRONIC,Book
+11,The Firestarter,Liam Howlett,94573945,Warner,1,AVAILABLE,ELECTRONIC,Book

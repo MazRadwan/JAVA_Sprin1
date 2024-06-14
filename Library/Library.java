@@ -87,7 +87,7 @@ public class Library {
 
     public void saveItems() {
         try {
-            LibraryItem.writeToFile("libraryitems.txt", items);
+            LibraryItem.writeToFile("Library/libraryitems.txt", items);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,7 +95,7 @@ public class Library {
 
     public void savePatrons() {
         try {
-            Patron.writeToFile("patron.txt", patrons);
+            Patron.writeToFile("Library/patron.txt", patrons);
         } catch (IOException e) {
             e.printStackTrace();
         }
