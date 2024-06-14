@@ -99,6 +99,7 @@ public class LibraryMenu {
     } else if (itemType == 2) {
         library.addItem(new Periodical(String.valueOf(newId), title, author, ISBN, publisher, numberOfCopies, status, bookType));
     }
+
 }
 
 
