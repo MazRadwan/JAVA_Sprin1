@@ -1,2 +1,2 @@
-# JAVA_Sprin1
+# JAVA_Sprint1
 Library app
