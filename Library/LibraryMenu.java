@@ -11,6 +11,7 @@ public class LibraryMenu {
     public static void main(String[] args) {
         int choice;
         do {
+            System.out.println();
             System.out.println("Welcome to the Library Management System");
             System.out.println("1. Add Library Item");
             System.out.println("2. Edit Library Item");
@@ -112,7 +113,6 @@ public class LibraryMenu {
 
     private static void editLibraryItem() {
         System.out.println();
-        System.out.println();
         System.out.print("Enter ID of the item to edit: ");
         String itemId = scanner.nextLine();
         LibraryItem item = library.findItemById(itemId);
@@ -145,11 +145,29 @@ public class LibraryMenu {
         System.out.println();
         System.out.print("Enter ID of the item to delete: ");
         String itemId = scanner.nextLine();
-        library.removeItem(itemId);
-        System.out.println("Item deleted successfully.");
-        System.out.println();
-        System.out.println();
+        LibraryItem item = library.findItemById(itemId);
+        
+        if (item != null) {
+            System.out.println(item.getTitle() + "\nAre you sure you want to delete this item? (Y/N): ");
+            String confirmation = scanner.nextLine();
+            
+            if (confirmation.equalsIgnoreCase("Y")) {
+                library.removeItem(itemId);
+                library.saveItems();
+                System.out.println();
+                System.out.println("Item deleted successfully.");
+                System.out.println();
+                System.out.println();
+            } else {
+                System.out.println();
+                System.out.println("Deletion cancelled.");
+                System.out.println();
+            }
+        } else {
+            System.out.println("Item not found.");
+        }
     }
+    
 
     private static void borrowLibraryItem() {
         System.out.println();
