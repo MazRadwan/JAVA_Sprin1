@@ -1,91 +1,69 @@
 package Library;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Library {
     private List<LibraryItem> items;
-    private List<Author> authors;
     private List<Patron> patrons;
 
     public Library() {
-        this.items = new ArrayList<>();
-        this.authors = new ArrayList<>();
-        this.patrons = new ArrayList<>();
-    }
-
-    // Item management
-    public void addItem(LibraryItem item) {
-        items.add(item);
-    }
-
-    public void editItem(String id, LibraryItem newItem) {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getId().equals(id)) {
-                items.set(i, newItem);
-                return;
-            }
+        try {
+            items = LibraryItem.readFromFile("Library/libraryItems.txt");
+            patrons = Patron.readFromFile("Library/patron.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-
-    public void deleteItem(String id) {
-        items.removeIf(item -> item.getId().equals(id));
     }
 
     public List<LibraryItem> getItems() {
         return items;
     }
 
-    // Author management
-    public void addAuthor(Author author) {
-        authors.add(author);
+    public List<Patron> getPatrons() {
+        return patrons;
     }
 
-    public void editAuthor(String name, Author newAuthor) {
-        for (int i = 0; i < authors.size(); i++) {
-            if (authors.get(i).getName().equals(name)) {
-                authors.set(i, newAuthor);
-                return;
-            }
-        }
+    public void addItem(LibraryItem item) {
+        items.add(item);
+        saveItems();
     }
 
-    public void deleteAuthor(String name) {
-        authors.removeIf(author -> author.getName().equals(name));
+    public void removeItem(String itemId) {
+        items.removeIf(item -> item.getId().equals(itemId));
+        saveItems();
     }
 
-    // Patron management
     public void addPatron(Patron patron) {
         patrons.add(patron);
+        savePatrons();
     }
 
-    public void editPatron(String name, Patron newPatron) {
-        for (int i = 0; i < patrons.size(); i++) {
-            if (patrons.get(i).getName().equals(name)) {
-                patrons.set(i, newPatron);
-                return;
-            }
-        }
-    }
-
-    public void deletePatron(String name) {
+    public void removePatron(String name) {
         patrons.removeIf(patron -> patron.getName().equals(name));
+        savePatrons();
     }
 
-    // Borrowing and returning items
     public void borrowItem(String patronName, String itemId) {
         Patron patron = findPatronByName(patronName);
         LibraryItem item = findItemById(itemId);
-        if (patron != null && item != null) {
+        if (patron != null && item != null && item instanceof Borrowable) {
             patron.borrowItem(item);
+            saveItems();
+        } else {
+            System.out.println("Item or Patron not found, or Item cannot be borrowed.");
         }
     }
 
     public void returnItem(String patronName, String itemId) {
         Patron patron = findPatronByName(patronName);
         LibraryItem item = findItemById(itemId);
-        if (patron != null && item != null) {
+        if (patron != null && item != null && item instanceof Borrowable) {
             patron.returnItem(item);
+            saveItems();
+        } else {
+            System.out.println("Item or Patron not found, or Item cannot be returned.");
         }
     }
 
@@ -107,7 +85,22 @@ public class Library {
         return null;
     }
 
-    // Additional methods for searching items, authors, and patrons
+    public void saveItems() {
+        try {
+            LibraryItem.writeToFile("libraryitems.txt", items);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void savePatrons() {
+        try {
+            Patron.writeToFile("patron.txt", patrons);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<LibraryItem> searchItemsByTitle(String title) {
         List<LibraryItem> results = new ArrayList<>();
         for (LibraryItem item : items) {
@@ -131,7 +124,7 @@ public class Library {
     public List<LibraryItem> searchItemsByISBN(String ISBN) {
         List<LibraryItem> results = new ArrayList<>();
         for (LibraryItem item : items) {
-            if (item.getISBN().equals(ISBN)) {
+            if (item.getISBN().equalsIgnoreCase(ISBN)) {
                 results.add(item);
             }
         }

@@ -1,24 +1,32 @@
 package Library;
 
-public class Periodical extends LibraryItem {
-    private PeriodicalType periodicalType;
-
-    public Periodical(String id, String title, String author, String ISBN, String publisher, int numberOfCopies, PeriodicalType periodicalType) {
+public class Periodical extends LibraryItem implements Borrowable {
+    public Periodical(String id, String title, String author, String ISBN, String publisher, int numberOfCopies) {
         super(id, title, author, ISBN, publisher, numberOfCopies);
-        this.periodicalType = periodicalType;
-    }
-
-    // Getters and setters
-    public PeriodicalType getPeriodicalType() {
-        return periodicalType;
-    }
-
-    public void setPeriodicalType(PeriodicalType periodicalType) {
-        this.periodicalType = periodicalType;
     }
 
     @Override
     public String getItemType() {
-        return "Periodical - " + periodicalType.toString();
+        return "Periodical";
+    }
+
+    @Override
+    public void borrowItem() {
+        if (getNumberOfCopies() > 0) {
+            setNumberOfCopies(getNumberOfCopies() - 1);
+            if (getNumberOfCopies() == 0) {
+                setStatus(Status.CHECKED_OUT);
+            }
+        } else {
+            System.out.println("Item not available for borrowing.");
+        }
+    }
+
+    @Override
+    public void returnItem() {
+        setNumberOfCopies(getNumberOfCopies() + 1);
+        if (getStatus() == Status.CHECKED_OUT) {
+            setStatus(Status.AVAILABLE);
+        }
     }
 }
