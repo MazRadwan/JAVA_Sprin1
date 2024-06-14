@@ -1,8 +1,8 @@
 package Library;
 
 public class Book extends LibraryItem implements Borrowable {
-    public Book(String id, String title, String author, String ISBN, String publisher, int numberOfCopies) {
-        super(id, title, author, ISBN, publisher, numberOfCopies);
+    public Book(String id, String title, String author, String ISBN, String publisher, int numberOfCopies, Status status, BookType bookType) {
+        super(id, title, author, ISBN, publisher, numberOfCopies, status, bookType);
     }
 
     @Override
