@@ -21,12 +21,12 @@ public class Book extends LibraryItem implements Borrowable {
             System.out.println("Item not available for borrowing.");
         }
     }
-
     @Override
     public void returnItem() {
         setNumberOfCopies(getNumberOfCopies() + 1);
-        if (getStatus() == Status.CHECKED_OUT) {
+        if (getStatus() == Status.CHECKED_OUT || getStatus() == Status.OVERDUE) {
             setStatus(Status.AVAILABLE);
         }
     }
+    
 }

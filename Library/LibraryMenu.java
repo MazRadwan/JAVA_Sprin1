@@ -170,31 +170,58 @@ public class LibraryMenu {
     
 
     private static void borrowLibraryItem() {
-        System.out.println();
-        System.out.println();
         System.out.print("Enter name of the patron: ");
         String patronName = scanner.nextLine();
         System.out.print("Enter ID of the item to borrow: ");
         String itemId = scanner.nextLine();
-        library.borrowItem(patronName, itemId);
-        System.out.println("Item borrowed successfully.");
-        System.out.println();
-        System.out.println();
+        LibraryItem item = library.findItemById(itemId);
+    
+        if (item != null) {
+            if (item.getStatus() == Status.AVAILABLE && item.getNumberOfCopies() > 0) {
+                library.borrowItem(patronName, itemId);
+                System.out.println();
+                System.out.println("Item borrowed successfully.");
+            } else {
+                System.out.println();
+                System.out.println(item.getTitle() + " is not available for borrowing.");
+            }
+        } else {
+            System.out.println();
+            System.out.println("Item not found.");
+        }
     }
+    
 
     private static void returnLibraryItem() {
-        System.out.println();
-        System.out.println();
         System.out.print("Enter name of the patron: ");
         String patronName = scanner.nextLine();
         System.out.print("Enter ID of the item to return: ");
         String itemId = scanner.nextLine();
-        library.returnItem(patronName, itemId);
-        System.out.println();
-        System.out.println("Item returned successfully.");
-        System.out.println();
-        System.out.println();
+        LibraryItem item = library.findItemById(itemId);
+    
+        if (item != null) {
+            Patron patron = library.findPatronByName(patronName);
+            if (patron != null) {
+                if (item instanceof Borrowable) {
+                    patron.returnItem(item);
+                    if (item.getStatus() == Status.CHECKED_OUT) {
+                        item.setStatus(Status.AVAILABLE);
+                    }
+                    item.setNumberOfCopies(item.getNumberOfCopies());
+                    library.saveItems();
+                    System.out.println("Item returned successfully.");
+                } else {
+                    System.out.println("This item cannot be returned.");
+                }
+            } else {
+                System.out.println("Patron not found.");
+            }
+        } else {
+            System.out.println("Item not found.");
+        }
     }
+    
+    
 
     private static void searchLibraryItems() {
         System.out.println("Search by:");
