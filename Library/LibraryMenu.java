@@ -230,40 +230,48 @@ public class LibraryMenu {
         System.out.println("3. ISBN");
         int searchChoice = scanner.nextInt();
         scanner.nextLine();  // Consume newline
-
+    
         System.out.print("Enter search term: ");
-        String searchTerm = scanner.nextLine();
-
+        String searchTerm = scanner.nextLine().toLowerCase();  // Convert to lowercase for case-insensitive search
+    
         List<LibraryItem> results = new ArrayList<>();
         switch (searchChoice) {
             case 1:
-                results = library.searchItemsByTitle(searchTerm);
+                for (LibraryItem item : library.getItems()) {
+                    if (item.getTitle().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                }
                 break;
             case 2:
-                results = library.searchItemsByAuthor(searchTerm);
+                for (LibraryItem item : library.getItems()) {
+                    if (item.getAuthor().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                }
                 break;
             case 3:
-                results = library.searchItemsByISBN(searchTerm);
+                for (LibraryItem item : library.getItems()) {
+                    if (item.getISBN().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                }
                 break;
             default:
                 System.out.println("Invalid search choice.");
                 return;
         }
-
+    
         if (results.isEmpty()) {
-            System.out.println();
             System.out.println("No items found.");
         } else {
-            System.out.println();
-            System.out.println();
             System.out.println("Search Results:");
             for (LibraryItem item : results) {
                 System.out.println(item.getId() + ": " + item.getTitle() + " by " + item.getAuthor() + " (" + item.getItemType() + "), Status: " + item.getStatus() + ", Book Type: " + item.getBookType());
             }
-            System.out.println();
-            System.out.println();
         }
     }
+    
 
     private static void displayAllLibraryItems() {
         System.out.println();
