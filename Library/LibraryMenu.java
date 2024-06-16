@@ -168,7 +168,6 @@ public class LibraryMenu {
         }
     }
     
-
     private static void borrowLibraryItem() {
         System.out.print("Enter name of the patron: ");
         String patronName = scanner.nextLine();
@@ -177,13 +176,18 @@ public class LibraryMenu {
         LibraryItem item = library.findItemById(itemId);
     
         if (item != null) {
-            if (item.getStatus() == Status.AVAILABLE && item.getNumberOfCopies() > 0) {
-                library.borrowItem(patronName, itemId);
-                System.out.println();
-                System.out.println("Item borrowed successfully.");
+            Patron patron = library.findPatronByName(patronName);
+            if (patron != null) {
+                if (item.getStatus() == Status.AVAILABLE && item.getNumberOfCopies() > 0) {
+                    library.borrowItem(patronName, itemId);
+                    System.out.println();
+                    System.out.println("Item: "+ item.getTitle() + " " + "borrowed successfully.");
+                } else {
+                    System.out.println(item.getTitle() + " is not available for borrowing.");
+                }
             } else {
                 System.out.println();
-                System.out.println(item.getTitle() + " is not available for borrowing.");
+                System.out.println("Patron not found.");
             }
         } else {
             System.out.println();
