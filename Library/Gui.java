@@ -3,6 +3,7 @@ package Library;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Gui extends JFrame {
@@ -24,6 +25,11 @@ public class Gui extends JFrame {
     private DefaultTableModel tableModel;
     private JPanel cardPanel;
     private CardLayout cardLayout;
+    //fields for search
+    private JTextField searchField;
+    private JComboBox<String> searchTypeCombo;
+    private JButton searchButton;
+    private JTextArea searchResultsArea;
 
     public Gui() {
         library = new Library();
@@ -46,6 +52,7 @@ public class Gui extends JFrame {
         cardPanel.add(createEditItemPanel(), "EDIT_ITEM");
         cardPanel.add(createDeleteItemPanel(), "DELETE_ITEM");
         cardPanel.add(createTransactionPanel(), "TRANSACTION");
+        cardPanel.add(createSearchPanel(), "SEARCH");
 
         add(cardPanel, BorderLayout.CENTER);
     }
@@ -73,7 +80,11 @@ public class Gui extends JFrame {
     
         JMenuItem transactionMenuItem = new JMenuItem("Borrow/Return Item");
         transactionMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "TRANSACTION"));
+
+        JMenuItem searchMenuItem = new JMenuItem("Search Items");
+        searchMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "SEARCH"));
     
+        menu.add(searchMenuItem);
         menu.add(addItemMenuItem);
         menu.add(displayAllMenuItem);
         menu.add(editItemMenuItem);
@@ -84,7 +95,78 @@ public class Gui extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    
+        private JPanel createSearchPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Search Items"));
+
+        JPanel searchControls = new JPanel(new FlowLayout());
+        searchField = new JTextField(20);
+        searchTypeCombo = new JComboBox<>(new String[]{"Title", "Author", "ISBN"});
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> performSearch());
+
+        searchControls.add(new JLabel("Search by:"));
+        searchControls.add(searchTypeCombo);
+        searchControls.add(searchField);
+        searchControls.add(searchButton);
+
+        searchResultsArea = new JTextArea(20, 40);
+        searchResultsArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(searchResultsArea);
+
+        panel.add(searchControls, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private void performSearch() {
+        String searchTerm = searchField.getText().trim().toLowerCase();
+        String searchType = (String) searchTypeCombo.getSelectedItem();
+        List<LibraryItem> results = new ArrayList<>();
+
+        if (searchTerm.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a search term.", "Search Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        for (LibraryItem item : library.getItems()) {
+            switch (searchType) {
+                case "Title":
+                    if (item.getTitle().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                    break;
+                case "Author":
+                    if (item.getAuthor().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                    break;
+                case "ISBN":
+                    if (item.getISBN().toLowerCase().contains(searchTerm)) {
+                        results.add(item);
+                    }
+                    break;
+            }
+        }
+
+        displaySearchResults(results, searchTerm, searchType);
+    }
+
+    private void displaySearchResults(List<LibraryItem> results, String searchTerm, String searchType) {
+        searchResultsArea.setText(""); // Clear previous results
+        searchResultsArea.append("Search Results for " + searchType + ": \"" + searchTerm + "\"\n\n");
+        
+        if (results.isEmpty()) {
+            searchResultsArea.append("No items found.");
+        } else {
+            for (LibraryItem item : results) {
+                searchResultsArea.append(String.format("ID: %s\nTitle: %s\nAuthor: %s\nISBN: %s\nStatus: %s\n\n",
+                        item.getId(), item.getTitle(), item.getAuthor(), item.getISBN(), item.getStatus()));
+            }
+            searchResultsArea.append("Total results: " + results.size());
+        }
+    }
     
     private JPanel createAddItemPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
