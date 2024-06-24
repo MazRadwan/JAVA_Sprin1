@@ -15,6 +15,7 @@ public abstract class LibraryItem {
     private BookType bookType;
 
     public LibraryItem(String id, String title, String author, String ISBN, String publisher, int numberOfCopies, Status status, BookType bookType) {
+        
         this.id = id;
         this.title = title;
         this.author = author;

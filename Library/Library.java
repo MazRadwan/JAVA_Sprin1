@@ -16,6 +16,21 @@ public class Library {
             e.printStackTrace();
         }
     }
+    public int getNewId() {
+        int maxId = 0;
+        for (LibraryItem item : items) {
+            try {
+                int itemId = Integer.parseInt(item.getId());
+                if (itemId > maxId) {
+                    maxId = itemId;
+                }
+            } catch (NumberFormatException e) {
+                // Skip items with non-numeric IDs
+            }
+        }
+        return maxId + 1;
+    }
+
 
     public List<LibraryItem> getItems() {
         return items;
