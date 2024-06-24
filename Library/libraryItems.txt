@@ -16,3 +16,6 @@
 18,The Book,Oliver Tames,945734987,Penguin,2,AVAILABLE,PRINTED,Book
 19,bookj,Steve rogers,439p57234,pubs,2,AVAILABLE,PRINTED,Book
 20,dsgasdfa,sdfadfaf,545345234,fdgsdfgsd,2,AVAILABLE,PRINTED,Book
+21,dlfjasldfjas,sdlkfsjfldsajf,957324953249,dfljsdfjas,2,AVAILABLE,PRINTED,Book
+22,fkfhafkdhsf,dfafsf,53452345,gagfgsd,2,AVAILABLE,PRINTED,Book
+23,dkfhaksfjhasd,aksdfhasdkfha,59345793857,FLFJALSDFL,2,AVAILABLE,PRINTED,Periodical
