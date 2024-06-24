@@ -15,7 +15,11 @@ public class Gui extends JFrame {
     private JTextField editTitleField, editAuthorField, editIsbnField, editPublisherField, editCopiesField, editIdField;
     private JComboBox<String> editItemTypeCombo;
     private JComboBox<BookType> editBookTypeCombo;
-    private JButton addButton, editButton;
+    // Fields for deleting items
+    private JTextField deleteIdField;
+    // Fields for borrowing items
+    private JTextField transactionPatronField, transactionItemIdField;
+    private JButton addButton, editButton, deleteButton, borrowButton, returnButton;
     private JTable itemTable;
     private DefaultTableModel tableModel;
     private JPanel cardPanel;
@@ -40,10 +44,14 @@ public class Gui extends JFrame {
         cardPanel.add(createAddItemPanel(), "ADD_ITEM");
         cardPanel.add(createDisplayAllItemsPanel(), "DISPLAY_ALL");
         cardPanel.add(createEditItemPanel(), "EDIT_ITEM");
+        cardPanel.add(createDeleteItemPanel(), "DELETE_ITEM");
+        cardPanel.add(createTransactionPanel(), "TRANSACTION");
 
         add(cardPanel, BorderLayout.CENTER);
     }
 
+
+ 
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Menu");
@@ -60,13 +68,23 @@ public class Gui extends JFrame {
         JMenuItem editItemMenuItem = new JMenuItem("Edit Item");
         editItemMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "EDIT_ITEM"));
     
+        JMenuItem deleteItemMenuItem = new JMenuItem("Delete Item");
+        deleteItemMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "DELETE_ITEM"));
+    
+        JMenuItem transactionMenuItem = new JMenuItem("Borrow/Return Item");
+        transactionMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "TRANSACTION"));
+    
         menu.add(addItemMenuItem);
         menu.add(displayAllMenuItem);
         menu.add(editItemMenuItem);
+        menu.add(deleteItemMenuItem);
+        menu.add(transactionMenuItem);
     
         menuBar.add(menu);
         setJMenuBar(menuBar);
     }
+
+    
     
     private JPanel createAddItemPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -370,6 +388,174 @@ public class Gui extends JFrame {
             };
             tableModel.addRow(row);
         }
+    }
+
+        private JPanel createDeleteItemPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Delete Item"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Item ID:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panel.add(deleteIdField = new JTextField(10), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        deleteButton = new JButton("Delete Item");
+        deleteButton.addActionListener(e -> deleteItem());
+        panel.add(deleteButton, gbc);
+
+        return panel;
+    }
+
+    private void deleteItem() {
+        String itemId = deleteIdField.getText().trim();
+        if (itemId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter an item ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        LibraryItem item = library.findItemById(itemId);
+        if (item == null) {
+            JOptionPane.showMessageDialog(this, "Item not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete this item?\n" + item.getTitle() + " by " + item.getAuthor(), 
+            "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            library.removeItem(itemId);
+            library.saveItems();
+            JOptionPane.showMessageDialog(this, "Item deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            deleteIdField.setText("");
+        }
+    }
+
+    private JPanel createTransactionPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Borrow/Return Item"));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Patron Name:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panel.add(transactionPatronField = new JTextField(20), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        panel.add(new JLabel("Item ID:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panel.add(transactionItemIdField = new JTextField(10), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        borrowButton = new JButton("Borrow Item");
+        borrowButton.addActionListener(e -> borrowItem());
+        panel.add(borrowButton, gbc);
+
+        gbc.gridx = 1;
+        returnButton = new JButton("Return Item");
+        returnButton.addActionListener(e -> returnItem());
+        panel.add(returnButton, gbc);
+
+        return panel;
+    }
+
+    private void borrowItem() {
+        String patronName = transactionPatronField.getText().trim();
+        String itemId = transactionItemIdField.getText().trim();
+
+        if (patronName.isEmpty() || itemId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both patron name and item ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Patron patron = library.findPatronByName(patronName);
+        if (patron == null) {
+            JOptionPane.showMessageDialog(this, "Patron not found. Please check the name and try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        LibraryItem item = library.findItemById(itemId);
+        if (item == null) {
+            JOptionPane.showMessageDialog(this, "Item not found. Please check the ID and try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (item.getStatus() != Status.AVAILABLE) {
+            JOptionPane.showMessageDialog(this, "Item is not available for borrowing.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            library.borrowItem(patronName, itemId);
+            library.saveItems();
+            library.savePatrons();
+            JOptionPane.showMessageDialog(this, "Item borrowed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearTransactionFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error borrowing item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void returnItem() {
+        String patronName = transactionPatronField.getText().trim();
+        String itemId = transactionItemIdField.getText().trim();
+
+        if (patronName.isEmpty() || itemId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both patron name and item ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Patron patron = library.findPatronByName(patronName);
+        if (patron == null) {
+            JOptionPane.showMessageDialog(this, "Patron not found. Please check the name and try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        LibraryItem item = library.findItemById(itemId);
+        if (item == null) {
+            JOptionPane.showMessageDialog(this, "Item not found. Please check the ID and try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (item.getStatus() != Status.CHECKED_OUT) {
+            JOptionPane.showMessageDialog(this, "This item is not checked out and cannot be returned.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            library.returnItem(patronName, itemId);
+            library.saveItems();
+            library.savePatrons();
+            JOptionPane.showMessageDialog(this, "Item returned successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearTransactionFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error returning item: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void clearTransactionFields() {
+        transactionPatronField.setText("");
+        transactionItemIdField.setText("");
     }
 
     private void clearAddFields() {
