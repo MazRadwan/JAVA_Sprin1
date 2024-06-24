@@ -83,6 +83,9 @@ public class Gui extends JFrame {
 
         JMenuItem searchMenuItem = new JMenuItem("Search Items");
         searchMenuItem.addActionListener(e -> cardLayout.show(cardPanel, "SEARCH"));
+
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.addActionListener(e -> exitApplication());
     
         menu.add(searchMenuItem);
         menu.add(addItemMenuItem);
@@ -90,6 +93,8 @@ public class Gui extends JFrame {
         menu.add(editItemMenuItem);
         menu.add(deleteItemMenuItem);
         menu.add(transactionMenuItem);
+        menu.addSeparator(); // Adds a separator line before the Exit option
+        menu.add(exitMenuItem);
     
         menuBar.add(menu);
         setJMenuBar(menuBar);
@@ -118,6 +123,23 @@ public class Gui extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    private void exitApplication() {
+        int confirm = JOptionPane.showOptionDialog(
+            this,
+            "Are you sure you want to exit the application?",
+            "Exit Confirmation",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            null,
+            null);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Perform any necessary cleanup here
+            System.exit(0);
+        }
     }
 
     private void performSearch() {
