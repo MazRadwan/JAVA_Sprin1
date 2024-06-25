@@ -158,5 +158,3 @@ Example Usage for the Library Menu
 10. The application will close with a goodbye message.
 
 This detailed example usage guide should help users understand how to navigate and use the Library Management System through the console-based menu provided by the LibraryMenu class. If you need further assistance, please refer to the README file in the repository or the generated Javadocs for more information.
-
-This documentation provides a comprehensive guide to understanding and using the Library Management System. For further details, refer to the generated Javadocs and the class diagram. If you have any questions, please refer to the README file in the repository.
