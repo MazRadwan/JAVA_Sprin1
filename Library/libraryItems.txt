@@ -15,5 +15,6 @@
 17,Book of Birds,Steve Cheese,435894579,Pigeon,1,AVAILABLE,PRINTED,Book
 18,The Book,Oliver Tames,945734987,Penguin,2,AVAILABLE,PRINTED,Book
 19,bookj,Steve rogers,439p57234,pubs,2,AVAILABLE,PRINTED,Book
-20,dsgasdfa,sdfadfaf,545345234,fdgsdfgsd,2,AVAILABLE,PRINTED,Book
-21,dlfjasldfjas,sdlkfsjfldsajf,957324953249,dfljsdfjas,2,AVAILABLE,PRINTED,Book
+20,JohnWick,Bill Jones,34957839,Warner,2,CHECKED_OUT,ELECTRONIC,Book
+22,Dairyqueen,C. Higgins,495723758,DQ publishing,2,AVAILABLE,PRINTED,Book
+23,Java is Fun,Dr Malik,9583275923475,Keyin,1,AVAILABLE,ELECTRONIC,Book
